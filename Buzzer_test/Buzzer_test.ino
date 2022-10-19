@@ -1,6 +1,6 @@
 const int buzzer = 8; //buzzer to arduino pin 9
 
-
+//This edit was made from within github
 void setup(){
  
   pinMode(buzzer, OUTPUT); // Set buzzer - pin 9 as an output
