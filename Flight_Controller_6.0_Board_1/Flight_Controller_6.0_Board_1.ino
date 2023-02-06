@@ -26,6 +26,15 @@ SoftwareSerial GPSserial(swsRX, swsTX);
 //end of GPS stuff
 
 
+//Radios
+
+SoftwareSerial HC12(12, 11); //RX then TX
+
+
+
+//end of Radios
+
+
 const int buzzer = 9;
 
 
@@ -54,6 +63,13 @@ int xaccelfinal, yaccelfinal, zaccelfinal = 0;
 
 
 int flightState = 0;
+
+
+
+
+
+
+
 void setup() {
 
   pinMode(buzzer, OUTPUT); // Set buzzer - pin 9 as an output
@@ -65,28 +81,35 @@ GPSserial.begin(GPSBaud);
   
   //Setup MPU 6050
   Serial.begin(9600);
-
+ HC12.begin(9600);               // Serial port to HC12
 
 
   delay(1000);
  // Serial.println("Initialize MPU6050");
   Serial.println("Initialize MPU6050");
+  HC12.write("Initialise GyroScope@ \n");
   Wire.setClock(9600);
   Serial.println("1/7");
+  HC12.write("1/7@");
   Wire.begin(1);
   Serial.println("2/7");
+   HC12.write("2/7@");
   delay(500);
   Serial.println("3/7");
+   HC12.write("3/7@");
   Wire.beginTransmission(MPU_addr);
   Serial.println("4/7");
-
+ HC12.write("4/7@");
 
   Wire.write(0x6B);  // PWR_MGMT_1 register
   Serial.println("5/7");
+   HC12.write("5/7@");
   Wire.write(0);     // set to zero (wakes up the MPU-6050)
   Serial.println("6/7");
+   HC12.write("6/7@");
  Serial.println( Wire.endTransmission(true));
   Serial.println("7/7");
+   HC12.write("7/7@");
 
 
 
@@ -99,11 +122,12 @@ GPSserial.begin(GPSBaud);
 
   //BMP 280 Setup
   Serial.println(F("BMP280 test"));
-
+ HC12.write("Initalise Barometer@");
 
  if (!bmp.begin()) {
     Serial.println(F("Could not find a valid BMP280 sensor, check wiring or "
                       "try a different address!"));
+                       HC12.write("Unable To intialise Barometer@");
     while (1){
       
       delay(10);
@@ -114,8 +138,10 @@ GPSserial.begin(GPSBaud);
 
 Serial.println("BMP FOUND");
   baseline =  bmp.readPressure();
+ HC12.write("Baseline Pressure Read");
+  Serial.println("Baseline pressure read@");
 
-  Serial.println("Baseline pressure read");
+   HC12.write("Barometer Initaisation Completed@");
   //END OF BMP 280
 
   
@@ -123,11 +149,11 @@ Serial.println("BMP FOUND");
 //delay(5000);
 
 getAccel();
-
+ HC12.write("Accelorometer read@");
 Serial.println("Accelorometer read");
 
 alt = getAltitude();
-
+ HC12.write("Altitude Read@");
 Serial.println("Altitude read");
 
 for (int i = 0; i<20; i++){
@@ -138,17 +164,24 @@ delay(30);
 
 
 }
+ HC12.write("@@---------  STARTUP COMPLETE  ---------@@");
 }
 
 void loop() {
 
-  
+ boolean awaitingTakeoff = false;
   while(yaccelfinal <130 and yaccelfinal>50 and flightState == 0){
+    if(!awaitingTakeoff){
 Serial.println("Waiting for takeoff");
+ HC12.write("Awaiting takeoff");
+    }
 baseline = getPressure();
 getAccel();
   }
 
+if(flightState == 0){
+   HC12.write("Takeoff Detected");
+}
   flightState =1;
 
 
@@ -175,15 +208,39 @@ alt = getAltitude();
   
 sendData();
 
-Serial.print("GGA - ");
+
+ 
+
+//Serial.print("GGA - ");
 String GPSGGAString = updateGPS();
-Serial.println(GPSGGAString);
+//Serial.println(GPSGGAString);
 
-Serial.println(GetGPSAlt(GPSGGAString));
+//Serial.println(GetGPSAlt(GPSGGAString));
 
-
+radio(GPSGGAString);
 }
 
+void radio(String GPSPOSSTR){
+String radioPacket = "<<";
+radioPacket += "ALT=" + String(alt, 2)+",";
+radioPacket += "MAT=" + String(maxAlt, 2)+",";
+radioPacket += "CHU="+String(servoDeploy)+",";
+radioPacket += "XCL="+String(xaccelfinal)+",";
+radioPacket += "YCL="+String(yaccelfinal)+",";
+radioPacket += "ZCL="+String(zaccelfinal)+",";
+radioPacket += "POS="+GPSPOSSTR+",";
+
+
+radioPacket += ">>";
+
+  Serial.println(radioPacket);
+for (int i = 0; i<radioPacket.length(); i++){
+  //Serial.print();
+   HC12.write(radioPacket.charAt(i));
+}
+Serial.println();
+HC12.write("@");
+}
 
 String updateGPS(){
   int searchPos = 0;
@@ -205,9 +262,9 @@ delay(1);
 x = 0;
   }delay(1);}
 
-  Serial.println(GPSRaw.indexOf("2"));
+ // Serial.println(GPSRaw.indexOf("2"));
 
-  Serial.println(GPSRaw);
+ // Serial.println(GPSRaw);
   
  if(GPSRaw.indexOf("$GNGGA") > -1){
 searchPos = GPSRaw.indexOf("$GNGGA");
@@ -217,13 +274,17 @@ searchPos = GPSRaw.indexOf("$", searchPos+1);
 GGAEnd = searchPos-1;
 GGA = GPSRaw.substring(GGAStart, GGAEnd);
 Serial.println("GGGGGGAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-   Serial.println(GGA);
- }else{
 
-  Serial.println("NOT FOUND");
+
+   Serial.println(GGA);
+    return GGA;
+ }else{
+return "-1";
+  //Serial.println("NOT FOUND");
+  
  }
 
- return GGA;
+
  
    
 }

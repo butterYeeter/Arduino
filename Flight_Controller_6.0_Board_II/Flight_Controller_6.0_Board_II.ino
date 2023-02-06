@@ -76,6 +76,9 @@ Serial.println("2/4");
   myservo.write(180);
 
 delay(500);
+  Serial.println("Initialisation Complete");
+
+
 }
 
 void loop() {
