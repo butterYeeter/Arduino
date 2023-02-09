@@ -18,7 +18,7 @@ void setup() {
   
   myservo.attach(3);  // attaches the servo on pin 9 to the servo object
   myservo.write(180);
-  delay(30000);
+  delay(10 000);
   
 }
 

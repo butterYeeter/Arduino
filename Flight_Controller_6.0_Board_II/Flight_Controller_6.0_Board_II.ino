@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 
 #include <SPI.h>
-
+    
 #include <SPI.h>
 #include <SD.h>
 #include <Servo.h>
@@ -50,7 +50,7 @@ Serial.println("INITIALISING SD CARD");
 
   if (!SD.begin(4)) {
     Serial.println(" SD initialization failed!");
-    while (1);
+   // while (1);
   }
   Serial.println("1/4");
   pinMode(8, INPUT);
@@ -67,7 +67,7 @@ Serial.println("2/4");
   } else {
 
     Serial.println("The file did not open");
-    while (1);
+    //while (1);
   }
   Serial.println("3/4");
   myFile.close();
@@ -85,7 +85,7 @@ void loop() {
   // put your main code here, to run repeatedly:
 
 //updateTime();
-
+Serial.println("Looking for data");
   if (servoDeploy == true) {
 
     myservo.write(30);
