@@ -28,7 +28,7 @@ SoftwareSerial GPSserial(swsRX, swsTX);
 
 //Radios
 
-SoftwareSerial HC12(12, 11); //RX then TX
+SoftwareSerial HC12(4, 3); //RX then TX
 
 
 
@@ -80,7 +80,7 @@ GPSserial.begin(GPSBaud);
 
   
   //Setup MPU 6050
-  Serial.begin(9600);
+  Serial.begin(115200);
  HC12.begin(9600);               // Serial port to HC12
 
 

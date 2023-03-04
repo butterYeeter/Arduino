@@ -4,11 +4,10 @@
     
 #include <SPI.h>
 #include <SD.h>
-#include <Servo.h>
 
 File myFile;
 
-Servo myservo;
+
 const int servoPin = 3;
 #include <Wire.h>
 
@@ -31,6 +30,10 @@ int minutes = 0;
 
 
 void setup() {
+pinMode(servoPin, OUTPUT);
+digitalWrite(servoPin, LOW);
+
+  
 //Clock initialisation
   Serial.begin(9600);           // start serial for output
 
@@ -72,8 +75,7 @@ Serial.println("2/4");
   Serial.println("3/4");
   myFile.close();
   Serial.println("4/4");
-  myservo.attach(servoPin);
-  myservo.write(180);
+
 
 delay(500);
   Serial.println("Initialisation Complete");
@@ -87,15 +89,12 @@ void loop() {
 //updateTime();
 Serial.println("Looking for data");
   if (servoDeploy == true) {
-
-    myservo.write(30);
-
-    delay(1000);
-     myservo.write(180);
+digitalWrite(servoPin, HIGH);
+   delay(1000);
     Serial.println("HHHHHHHHHHHEEEEEEEEEERRRRRRRRRRRRRRREEEEEEEEEEEEEEEEE");
   } else {
 
-    myservo.write(180);
+digitalWrite(servoPin, LOW);
 
   }
 

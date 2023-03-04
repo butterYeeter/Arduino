@@ -1,7 +1,7 @@
 
 #include <SoftwareSerial.h>
 
-SoftwareSerial HC12(17, 16); // HC-12 TX Pin, HC-12 RX Pin
+SoftwareSerial HC12(9, 10); // HC-12 TX Pin, HC-12 RX Pin
 
 int x = 0;
 
