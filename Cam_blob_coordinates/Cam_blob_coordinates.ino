@@ -14,7 +14,7 @@ using namespace Eloquent::Esp32cam;
 
 Cam cam;
 JpegDecoder decoder;
-Applications::ColorBlobDetector detector(227, 139, 100); // yellow-ish
+Applications::ColorBlobDetector redDetector(251, 155, 129);
 
 
 void setup() {
@@ -34,12 +34,12 @@ void setup() {
      * Set detector tollerance
      * The higher, the more shade of colors it will pick
      */
-    detector.tollerate(50);
+    redDetector.tollerate(50);
     /**
      * Skip blob localization (slow) if not enough
      * pixels match color
      */
-    detector.setMinArea(30 * 30);
+    redDetector.setMinArea(30 * 30);
 
     while (!cam.begin())
         Serial.println(cam.getErrorMessage());
@@ -60,28 +60,28 @@ void loop() {
     /**
      * Detect blob in frame
      */
-    if (detector.detect(decoder)) {
+    if (redDetector.detect(decoder)) {
         Serial.print("Blob detected from top-left ");
-        Serial.print(detector.blob.top);
+        Serial.print(redDetector.blob.top);
         Serial.print(", ");
-        Serial.print(detector.blob.left);
+        Serial.print(redDetector.blob.left);
         Serial.print(" to bottom-right ");
-        Serial.print(detector.blob.bottom);
+        Serial.print(redDetector.blob.bottom);
         Serial.print(", ");
-        Serial.println(detector.blob.right);
+        Serial.println(redDetector.blob.right);
         Serial.print("Blob detection run in ");
-        Serial.print(detector.getExecutionTimeInMillis());
+        Serial.print(redDetector.getExecutionTimeInMillis());
         Serial.println("ms");
     }
     else {
-        Serial.println(detector.getErrorMessage());
+        Serial.println(redDetector.getErrorMessage());
     }
 
     // while debugging, these may turn out useful
-    Serial.print(detector.maskCount);
+    Serial.print(redDetector.maskCount);
     Serial.println(" pixels match target color");
-    //Serial.println(detector.toString());
-    detector.printTo(Serial);
+    Serial.println(redDetector.toString().length());
+   redDetector.printTo(Serial);
 
 
 }
