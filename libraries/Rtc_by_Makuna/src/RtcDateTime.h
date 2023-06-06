@@ -1,4 +1,28 @@
+/*-------------------------------------------------------------------------
+RTC library
 
+Written by Michael C. Miller.
+
+I invest time and resources providing this open source code,
+please support me by dontating (see https://github.com/Makuna/Rtc)
+
+-------------------------------------------------------------------------
+This file is part of the Makuna/Rtc library.
+
+Rtc is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
+
+Rtc is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with Rtc.  If not, see
+<http://www.gnu.org/licenses/>.
+-------------------------------------------------------------------------*/
 
 #ifndef __RTCDATETIME_H__
 #define __RTCDATETIME_H__
@@ -20,13 +44,17 @@ enum DayOfWeek
 };
 
 const uint16_t c_OriginYear = 2000;
-const uint32_t c_Epoch32OfOriginYear = 946684800;
+const uint32_t c_UnixEpoch32 = 946684800; // Unix origin year is 1970
+const uint32_t c_NtpEpoch32FromUnixEpoch32 = 2208988800; // Ntp origin year is 1900
+const uint32_t c_NtpEpoch32 = c_UnixEpoch32 + c_NtpEpoch32FromUnixEpoch32;
+
 extern const uint8_t c_daysInMonth[] PROGMEM;
 
 class RtcDateTime
 {
 public:
-    RtcDateTime(uint32_t secondsFrom2000 = 0);
+    explicit RtcDateTime(uint32_t secondsFrom2000 = 0);
+
     RtcDateTime(uint16_t year,
         uint8_t month,
         uint8_t dayOfMonth,
@@ -90,6 +118,12 @@ public:
         *this = after;
     }
 
+    RtcDateTime operator + (uint32_t seconds) const
+    {
+        RtcDateTime after = RtcDateTime(TotalSeconds() + seconds);
+        return after;
+    }
+
     // remove seconds
     void operator -= (uint32_t seconds)
     {
@@ -97,30 +131,102 @@ public:
         *this = before;
     }
 
-    // allows for comparisons to just work (==, <, >, <=, >=, !=)
-    operator uint32_t() const
+    RtcDateTime operator - (uint32_t seconds) const
     {
-        return TotalSeconds();
+        RtcDateTime after = RtcDateTime(TotalSeconds() - seconds);
+        return after;
+    }
+
+    bool operator == (const RtcDateTime& right)
+    {
+        return (this->TotalSeconds() == right.TotalSeconds());
+    }
+
+    bool operator != (const RtcDateTime& right)
+    {
+        return (this->TotalSeconds() != right.TotalSeconds());
+    }
+
+    bool operator <= (const RtcDateTime& right)
+    {
+        return (this->TotalSeconds() <= right.TotalSeconds());
+    }
+
+    bool operator >= (const RtcDateTime& right)
+    {
+        return (this->TotalSeconds() >= right.TotalSeconds());
+    }
+
+    bool operator < (const RtcDateTime& right)
+    {
+        return (this->TotalSeconds() < right.TotalSeconds());
+    }
+
+    bool operator > (const RtcDateTime& right)
+    {
+        return (this->TotalSeconds() > right.TotalSeconds());
     }
 
     // Epoch32 support
+    [[deprecated("Use Unix32Time() instead.")]]
     uint32_t Epoch32Time() const
     {
-        return TotalSeconds() + c_Epoch32OfOriginYear;
+        return TotalSeconds() + c_UnixEpoch32;
     }
-    void InitWithEpoch32Time(uint32_t time)
+    [[deprecated("Use InitWithUnix32Time() instead.")]]
+    void InitWithEpoch32Time(uint32_t secondsSince1970)
     {
-        _initWithSecondsFrom2000<uint32_t>(time - c_Epoch32OfOriginYear);
+        _initWithSecondsFrom2000<uint32_t>(secondsSince1970 - c_UnixEpoch32);
     }
 
     // Epoch64 support
+    [[deprecated("Use Unix64Time() instead.")]]
     uint64_t Epoch64Time() const
     {
-        return TotalSeconds64() + c_Epoch32OfOriginYear;
+        return TotalSeconds64() + c_UnixEpoch32;
     }
-    void InitWithEpoch64Time(uint64_t time)
+    [[deprecated("Use InitWithUnix64Time() instead.")]]
+    void InitWithEpoch64Time(uint64_t secondsSince1970)
     {
-        _initWithSecondsFrom2000<uint64_t>(time - c_Epoch32OfOriginYear);
+        _initWithSecondsFrom2000<uint64_t>(secondsSince1970 - c_UnixEpoch32);
+    }
+
+    // Unix32 support
+    uint32_t Unix32Time() const
+    {
+        return TotalSeconds() + c_UnixEpoch32;
+    }
+    void InitWithUnix32Time(uint32_t secondsSince1970)
+    {
+        _initWithSecondsFrom2000<uint32_t>(secondsSince1970 - c_UnixEpoch32);
+    }
+    // Unix64 support
+    uint64_t Unix64Time() const
+    {
+        return TotalSeconds64() + c_UnixEpoch32;
+    }
+    void InitWithUnix64Time(uint64_t secondsSince1970)
+    {
+        _initWithSecondsFrom2000<uint64_t>(secondsSince1970 - c_UnixEpoch32);
+    }
+
+    // Ntp32 support
+    uint32_t Ntp32Time() const
+    {
+        return TotalSeconds() + c_NtpEpoch32;
+    }
+    void InitWithNtp32Time(uint32_t secondsSince1900)
+    {
+        _initWithSecondsFrom2000<uint32_t>(secondsSince1900 - c_NtpEpoch32);
+    }
+    // Ntp64 support
+    uint64_t Ntp64Time() const
+    {
+        return TotalSeconds64() + c_NtpEpoch32;
+    }
+    void InitWithNtp64Time(uint64_t secondsSince1900)
+    {
+        _initWithSecondsFrom2000<uint64_t>(secondsSince1900 - c_NtpEpoch32);
     }
 
     void InitWithIso8601(const char* date);
@@ -179,7 +285,6 @@ protected:
         }
         _dayOfMonth = days + 1;
     }
-
 };
 
 #endif // __RTCDATETIME_H__
