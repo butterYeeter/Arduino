@@ -22,6 +22,8 @@ int targetAngle = 0;
 int ultrasonicWait = 20;
 
 void setup() {
+
+  //These are for the ultrasonic sensors
   pinMode(2, OUTPUT); //trig
   pinMode(3, INPUT);  //echo
   pinMode(4, OUTPUT); //trig
@@ -53,7 +55,9 @@ void loop() {
 }
 
 
+//TODO
 
+//Pass the turning direction into the measure method to infulance the sensors that it can read from
 
 
 
@@ -118,6 +122,8 @@ void measure(){
     distanceToLeftOld = distanceToLeft;
     distanceToRightOld = distanceToRight;
   }
+
+
 
   if(distanceToLeftOld < (distanceToLeft - 10) && distanceToLeft != 0){
     turningRight = false;
