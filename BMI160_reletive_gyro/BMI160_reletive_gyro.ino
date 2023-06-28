@@ -1,77 +1,91 @@
 #include <BMI160Gen.h>
-
+#include <SoftwareSerial.h>
 const int select_pin = 10;
 const int i2c_addr = 0x69;
 
 const short int serialAdress = 1;
 
+SoftwareSerial comBus(8, 9);  // RX, TX
 
 long int oldTime = 0;
 long int gyroValue = 0;
 float gyroOfset = -20.79;
 void setup() {
-  Serial.begin(115200); // initialize Serial communication
-  while (!Serial);    // wait for the serial port to open
+
+  comBus.begin(57600);
+  Serial.begin(9600);  // initialize Serial communication
+  while (!Serial)
+    ;  // wait for the serial port to open
 
   // initialize device
 
   BMI160.begin(BMI160GenClass::I2C_MODE, i2c_addr);
 
-checkSerial();
-oldTime = millis();
+  checkSerial();
+  oldTime = millis();
 }
 
 void loop() {
 
-int requestCode = checkSerial();
+  int requestCode = checkSerial();
 
-if(requestCode == 0){
 
-Serial.write(gyroValue/130000);
+  if (requestCode == 0) {
+    comBus.write(2);
+    sendInt(gyroValue / 130000);
+    Serial.print(gyroValue / 130000);
+  }
 
+
+  integrateZ();
 }
 
+int recieveInt() {
+  byte b1 = comBus.read();
+  byte b2 = comBus.read();
 
-integrateZ();
+  int returnInt = b1;
+
+  returnInt = returnInt << 8;
+  returnInt += b2;
+
+  return returnInt;
+}
+void sendInt(int sendInt){
+  byte b1 = sendInt>>8;
+  byte b2 = sendInt;
+  comBus.write(b1);
+  comBus.write(b2);
 
 }
+int checkSerial() {
 
-int checkSerial(){
+  if (comBus.available() > 0) {
+    String dataPackets = "";
 
- if (Serial.available() > 0) {
-   String dataPackets = "";
-   while(Serial.available()){
-    byte inByte = Serial.read();
-   dataPackets += inByte;
+    dataPackets = "";
 
+    //dataPackets = "<3><120>";
+    int address = comBus.read();
+    Serial.println(address);
+    int code = recieveInt();
 
-     //dataPackets = "<3><120>";
-    int address = dataPackets.charAt(1) ;
-
-
-    if(address == serialAdress){
-    int codePos = 4;
-    int code = ((dataPackets.charAt(codePos) - 48) *100) +((dataPackets.charAt(codePos+1) - 48) *10) + ((dataPackets.charAt(codePos+2)));
-  //Serial.println(address );
- // Serial.println(code);
-
-  return code;
-
+    if (address == serialAdress) {
+      Serial.println(code);
+      return code;
     }
   }
-  
- }
 
-return -1;
+  return -1;
 }
 
-void integrateZ(){
+void integrateZ() {
 
 
- long int newTime = millis();
+  long int newTime = millis();
 
 
-  int gx, gy, gz;         // raw gyro values
+  int gx, gy, gz;  // raw gyro values
 
   // read raw gyro measurements from device
   BMI160.readGyro(gx, gy, gz);
@@ -80,13 +94,6 @@ void integrateZ(){
 
 
 
-  gyroValue += (gz-gyroOfset)*(newTime-oldTime);
+  gyroValue += (gz - gyroOfset) * (newTime - oldTime);
   oldTime = newTime;
-
-
-
-
-
-
- 
 }
