@@ -5,6 +5,9 @@ const int i2c_addr = 0x69;
 
 const short int serialAdress = 1;
 
+const int redLED = 12;
+const int greenLED = 11;
+
 SoftwareSerial comBus(8, 9);  // RX, TX
 
 long int oldTime = 0;
@@ -12,16 +15,57 @@ long int gyroValue = 0;
 float gyroOfset = -20.79;
 void setup() {
 
-  comBus.begin(31250);
-  Serial.begin(9600);  // initialize Serial communication
-  while (!Serial)
-    ;  // wait for the serial port to open
+  pinMode(redLED, OUTPUT);
+  pinMode(greenLED, OUTPUT);
 
+  for(int i = 0; i<10; i++){
+    digitalWrite(redLED, LOW);
+  digitalWrite(greenLED, HIGH);
+  delay(100);
+  digitalWrite(greenLED, LOW);
+  digitalWrite(redLED, HIGH);
+  delay(100);
+    
+  }
+  
+  comBus.begin(57600);
+
+  digitalWrite(redLED, LOW);
+  digitalWrite(greenLED, HIGH);
+  delay(100);
+  digitalWrite(greenLED, LOW);
+  digitalWrite(redLED, HIGH);
+  delay(100);
+  
+  Serial.begin(9600);  // initialize Serial communication
+  while (!Serial);  // wait for the serial port to open
+  digitalWrite(redLED, LOW);
+  digitalWrite(greenLED, HIGH);
+  delay(100);
+  digitalWrite(greenLED, LOW);
+  digitalWrite(redLED, HIGH);
+  delay(500);
   // initialize device
 
-  BMI160.begin(BMI160GenClass::I2C_MODE, i2c_addr);
-
+  if(!(BMI160.begin(BMI160GenClass::I2C_MODE, i2c_addr))){
+    while(1){
+    Serial.println("Failed to initialise");
+    delay(1000);
+    }
+  }
+  digitalWrite(redLED, LOW);
+  digitalWrite(greenLED, HIGH);
+  delay(100);
+  digitalWrite(greenLED, LOW);
+  digitalWrite(redLED, HIGH);
+  delay(500);
   checkSerial();
+    digitalWrite(redLED, LOW);
+  digitalWrite(greenLED, HIGH);
+  delay(100);
+  digitalWrite(greenLED, LOW);
+  digitalWrite(redLED, HIGH);
+  delay(500);
   oldTime = millis();
 }
 
@@ -31,10 +75,12 @@ void loop() {
 
 
   if (requestCode == 0) {
+      digitalWrite(redLED, HIGH);
+  digitalWrite(greenLED, HIGH);
     comBus.write(2);
     sendInt(gyroValue / 130000);
-    Serial.print("Req0");
     Serial.print(gyroValue / 130000);
+     digitalWrite(redLED, LOW);
   }
 
 
@@ -72,7 +118,6 @@ int checkSerial() {
     int code = recieveInt();
 
     if (address == serialAdress) {
-      Serial.print("code: ");
       Serial.println(code);
       return code;
     }
