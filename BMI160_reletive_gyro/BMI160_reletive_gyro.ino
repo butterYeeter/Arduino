@@ -12,7 +12,7 @@ long int gyroValue = 0;
 float gyroOfset = -20.79;
 void setup() {
 
-  comBus.begin(57600);
+  comBus.begin(31250);
   Serial.begin(9600);  // initialize Serial communication
   while (!Serial)
     ;  // wait for the serial port to open
@@ -33,6 +33,7 @@ void loop() {
   if (requestCode == 0) {
     comBus.write(2);
     sendInt(gyroValue / 130000);
+    Serial.print("Req0");
     Serial.print(gyroValue / 130000);
   }
 
@@ -71,6 +72,7 @@ int checkSerial() {
     int code = recieveInt();
 
     if (address == serialAdress) {
+      Serial.print("code: ");
       Serial.println(code);
       return code;
     }

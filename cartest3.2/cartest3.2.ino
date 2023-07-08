@@ -1,13 +1,5 @@
 #include <SoftwareSerial.h>
-#include <PID_v1.h>
 
-//Stuff for PID
-
-double Setpoint, Input, Output;
-
-
-double Kp=2, Ki=5, Kd=1;
-PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
 
 //pins in use by the ultrasonic sensors
 // 2 3  Forward
@@ -23,6 +15,7 @@ const short int serialAdress = 2;
 
 const int servoPin = 9;
 
+
 // defines variables
 long duration;  // variable for the duration of sound wave travel
 int distance;   // variable for the distance measurement
@@ -30,9 +23,16 @@ bool turningRight = false;
 
 int targetAngle = 0;
 
+
+int servoError;
+
+
 int ultrasonicWait = 20;
 
 void setup() {
+  Serial.println("Starting");
+
+
 delay(1000);
   //These are for the ultrasonic sensors
   pinMode(2, OUTPUT);   //trig
@@ -45,7 +45,7 @@ delay(1000);
   pinMode(11, INPUT);   //echo
 
 
-  comBus.begin(57600);
+  comBus.begin(31250);
   Serial.begin(9600);  // // Serial Communication is starting with 9600 of baudrate speed
   delay(500);
   Serial.println("Ultrasonic Sensor HC-SR04 Test");  // print some text in Serial Monitor
@@ -63,11 +63,39 @@ void loop() {
   //turn(turningRight);wwwww
 
   //measure()
-  delay(100);
-  Serial.println("Checking");
-  int angle = checkGyro();
 
-  Serial.println(angle);
+  for(int i = 0; i<50; i++){
+
+  delay(100);
+  
+  int angle = checkGyro();
+  Serial.print("|");
+  Serial.print(angle);
+
+
+    servoError = ((targetAngle-angle ) * -2)  + 98;
+
+
+      if(servoError <68){
+          servoError = 68;
+
+      }
+      else if (servoError > 128){
+        servoError = 128;
+      }
+
+
+  if(angle != -1){
+
+  Serial.print("\t");
+  Serial.println(servoError);
+
+  myservo.write(servoError);
+}
+
+  }
+  targetAngle += 90;
+
 }
 
 
@@ -126,10 +154,12 @@ digitalWrite(13, HIGH);
   digitalWrite(13,LOW);
   int counter = 0;
   boolean exitLoop = false;
-  while(!comBus.available() || exitLoop){
+  while(comBus.available() ==false && exitLoop == false){
       delay(1);
       counter++;
-    if(counter == 300){
+      Serial.print(counter);
+       Serial.print("  ");
+    if(counter > 10){
       exitLoop = true;
     }
 
