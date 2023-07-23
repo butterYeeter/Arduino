@@ -97,7 +97,7 @@ void steer() {
     angleDiff = -maxSteering;
   }
 
-  int steeringAngle = angleDiff * 2 + 98;
+  int steeringAngle = angleDiff * 1 + 98;
    Serial.print("Steering angle - ");
   Serial.println(steeringAngle);
   myservo.write(steeringAngle);
