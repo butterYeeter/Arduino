@@ -196,7 +196,7 @@ void receiveEvent() {
   Serial.print("RECIEVED\t\t\t\t Target angle  =");
   Serial.println(targetAngle);
   int motor = Wire.read();
-
+//delay(1000);
 }
 
 void requestEvent(){

@@ -199,7 +199,7 @@ void measure() {
     int estAngle = getAngle(distanceToRight, distanceBackRight);
 
     Serial.print("LEFT - ");
-    Serial.print(distanceToLeft);
+    Serial.priMnt(distanceToLeft);
     Serial.print(" | ");
     Serial.print(distanceToLeftOld);
 
