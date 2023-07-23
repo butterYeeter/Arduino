@@ -65,9 +65,10 @@ int backRightVal;
 int backLeftVal;
 int backVal;
 
+const int echoPin = 27;
+const int trigPin = 26;
 
-
- const float pi = 3.14159;
+const float pi = 3.14159;
 
 
 bool turningRight;
@@ -75,11 +76,18 @@ bool turningRight;
 int8_t motorState = 0;
 int targetAngle = 0;
 
+bool oddWall = false;
+
+int oddWalldist = -1;
+int evenWalldist = -1;
+
 void setup() {
 
   TOFBus.begin(57600);
   Serial.begin(9600);
 
+  Wire.begin();
+  Wire.setClock(100000);
 
   Wire1.setSDA(18);
   Wire1.setSCL(19);
@@ -101,6 +109,8 @@ void setup() {
   pinMode(backLeftPin, OUTPUT);
   pinMode(backPin, OUTPUT);
 
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
 
   digitalWrite(redLED, LOW);
   digitalWrite(blueLED, LOW);
@@ -142,17 +152,22 @@ void setup() {
 
 
 void loop() {
-  digitalWrite(blueLED, HIGH);
-  digitalWrite(redLED, LOW);
 
-turningRight = false;
-  alongWall();
+
 
   firstmovement();
+oddWall = true;
+
 
   delay(3000);
 
-  alongWall();
+  
+  while(true){
+    Serial.println(targetAngle);
+   // setAngle(targetAngle);
+  }
+  
+    alongWall();
 
 
   Serial.print(frontVal);
@@ -182,98 +197,99 @@ turningRight = false;
 }
 
 
-void alongWall(){
+void alongWall() {
 
- bool edgeFound = false;
+  bool edgeFound = false;
 
 
-  int ang, front, back;
-  int turnDelay = 300;
-int targetAngleOfset = 0;
+  int forward, front, back;
+  int turnDelay = 0;
+  int targetAngleOfset = 0;
   int angleAjustment = 15;
 
   while (!edgeFound) {
-    setAngle(targetAngle+targetAngleOfset);
-   
-    if(turningRight){
-        right45Val = readRight45();
-        frontRightVal = readFrontRight();
-        backRightVal = readBackRight();
+    setAngle(targetAngle + targetAngleOfset);
 
-   ang = right45Val;
-   front = frontRightVal;
-   back = backRightVal;
+    if (turningRight) {
+      frontVal = readFront();
+      frontRightVal = readFrontRight();
+      backRightVal = readBackRight();
 
-    }else{
-      left45Val = readLeft45();
+      forward = frontVal;
+      front = frontRightVal;
+      back = backRightVal;
+
+    } else {
+      frontVal = readFront();
       frontLeftVal = readFrontLeft();
       backLeftVal = readBackLeft();
-       ang = left45Val;
-   front = frontLeftVal;
-   back = backLeftVal;
+      forward = frontVal;
+      front = frontLeftVal;
+      back = backLeftVal;
     }
 
-float distMultiplier = cos(targetAngleOfset*pi/180);
+    float distMultiplier = cos(targetAngleOfset * pi / 180);
 
-int estDist = distMultiplier*(front+back)/2;
-
-
-Serial.print("\t\t\t\t");
-Serial.print(ang);
-Serial.print("\t\t");
-Serial.print(front);
-Serial.print("\t\t");
-Serial.print(back);
-Serial.print("\t\t");
-Serial.print(targetAngle+targetAngleOfset);
+    int estDist = distMultiplier * (front + back) / 2;
 
 
-Serial.print("\t\t\t\tEstimated Distance:");
-Serial.println(estDist);
+    Serial.print("\t\t\t\t front = ");
+    Serial.print(forward);
+    Serial.print("\t");
+    Serial.print(getUltrasonic());
+    Serial.print("\t\t front side = ");
+    Serial.print(front);
+    Serial.print("\t\t back side =");
+    Serial.print(back);
+    Serial.print("\t\t");
+    Serial.print(targetAngle + targetAngleOfset);
+
+
+    Serial.print("\t\t\t\tEstimated Distance:");
+    Serial.println(estDist);
 
 
 
 
 
-if( estDist> 150){
-  Serial.println("Going closer to the wall");
-if(turningRight){
-  targetAngleOfset = angleAjustment;
-}else{
-  targetAngleOfset = -angleAjustment;
-}
+    if (estDist > 150) {
+      Serial.println("Going closer to the wall");
+      if (turningRight) {
+        targetAngleOfset = angleAjustment;
+      } else {
+        targetAngleOfset = -angleAjustment;
+      }
 
-delay(turnDelay);
+      delay(turnDelay);
 
-}
-else if(estDist < 50){
-  Serial.println("Moving further away from the wall");
-if(turningRight){
-  targetAngleOfset = -angleAjustment;
-}else{
-  targetAngleOfset = +angleAjustment;
-}
+    } else if (estDist < 50) {
+      Serial.println("Moving further away from the wall");
+      if (turningRight) {
+        targetAngleOfset = -angleAjustment;
+      } else {
+        targetAngleOfset = +angleAjustment;
+      }
 
-delay(turnDelay);
+      delay(turnDelay);
 
-}
+    }
 
-else if(estDist > 80 || estDist < 120){
- Serial.println("Correct distance to the walll");
- targetAngleOfset = 0;
-delay(turnDelay);
+    else if (estDist > 80 || estDist < 120) {
+      Serial.println("Correct distance to the walll");
+      targetAngleOfset = 0;
+      delay(turnDelay);
 
-}
-else{
-  Serial.println("Somthing about a wall");
-}
+    } else {
+      Serial.println("Somthing about a wall");
+    }
 
-
+    if (forward == -1) {
+    }
   }
-
-
-
 }
+
+
+
 
 
 void firstmovement() {
@@ -306,10 +322,84 @@ void firstmovement() {
   if (turningRight) {
     Serial.println("--------Turning Right--------");
     setAngle(90);
+    targetAngle = 90;
+  } else {
+    Serial.println("--------Turning Left--------");
+    setAngle(-90);
+    targetAngle=-90;
+  }
+
+
+  evenWalldist = getUltrasonic();
+}
+
+
+
+void secondMovement() {
+  
+  bool edgeFound = false;
+
+
+  if (turningRight) {
+    
+  while (!edgeFound) {
+
+    frontRightVal = readFrontRight();
+   
+
+    Serial.print(frontLeftVal);
+    Serial.print(" \t\t\t\t | \t\t\t\t ");
+    Serial.println(frontRightVal);
+
+
+
+    if (frontRightVal == -1) {
+      turningRight = true;
+      edgeFound = true;
+ 
+  }
+
+  }
+  
+  } else {
+    
+  while (!edgeFound) {
+
+    
+    frontLeftVal = readFrontLeft();
+
+    Serial.print(frontLeftVal);
+  
+
+
+
+    if (frontLeftVal == -1) {
+      turningRight = false;
+      edgeFound = true;
+    }
+
+
+
+  }
+  
+  }
+
+
+  if (turningRight) {
+    Serial.println("--------Turning Right--------");
+    setAngle(90);
   } else {
     Serial.println("--------Turning Left--------");
     setAngle(-90);
   }
+
+
+
+
+
+
+
+  evenWalldist = getUltrasonic();
 }
 
 void readAll() {
@@ -342,7 +432,7 @@ void setMotor(int8_t motorNum) {
 void setAngle(int targetAngle) {
   Serial.println("Transmitting Wire");
   Wire1.beginTransmission(12);
- 
+
   sendWireInt(targetAngle);
 
   Wire1.write(motorState);
@@ -887,3 +977,28 @@ void setUpFailedError(int code) {
     delay(1000);
   }
 }
+
+
+
+
+int getUltrasonic() {
+  int duration;
+  float distance;
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH, 250000);
+  // Calculating the distance
+  distance = duration * 0.034 / 2;  // Speed of sound wave divided by 2 (go and back)
+                                    // Displays the distance on the Serial Monitor
+  if (distance > 2000) {
+    return 200;
+  } else {
+    return distance;
+  }
+}
+
