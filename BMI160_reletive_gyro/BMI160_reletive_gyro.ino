@@ -71,7 +71,7 @@ void setup() {
 
 void loop() {
 
-  int requestCode = checkSerial();
+  /*int requestCode = checkSerial();
 
 
   if (requestCode == 0) {
@@ -81,10 +81,38 @@ void loop() {
     sendInt(gyroValue / 130000);
     Serial.print(gyroValue / 130000);
      digitalWrite(redLED, LOW);
-  }
+  }*/
+
+  steer();
 
 
   integrateZ();
+}
+
+
+
+void steer() {
+
+  int angle = gyroValue / 130000; //checkGyro();
+
+
+ 
+
+
+  int angleDiff = targetAngle + angle;
+  Serial.print("\tTarget Angle - ");
+  Serial.print(targetAngle);
+  int maxSteering = 20;
+  if (angleDiff > maxSteering) {
+    angleDiff = maxSteering;
+  } else if (angleDiff < -maxSteering) {
+    angleDiff = -maxSteering;
+  }
+
+  int steeringAngle = angleDiff * 1 + 98;
+   Serial.print("Steering angle - ");
+  Serial.println(steeringAngle);
+  myservo.write(steeringAngle);
 }
 
 int recieveInt() {

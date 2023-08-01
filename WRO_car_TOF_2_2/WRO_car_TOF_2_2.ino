@@ -82,7 +82,7 @@ int oddWalldist = -1;
 int evenWalldist = -1;
 
 
-int turnOffset = 0;
+int turnOffset = 5;
 void setup() {
 
   TOFBus.begin(57600);
@@ -156,22 +156,25 @@ void setup() {
 void loop() {
 
   setMotor(6);
-
+oddWall = true;
   firstmovement();
   setMotor(10);
-  oddWall = true;
+  oddWall = false;
 
+  waitForTurn();
 
   //delay(1000);
-
   
     secondMovement();
     setMotor(10);
-
+    waitForTurn();
+oddWall = true;
   while (true) {
     alongWall();
     setMotor(10);
-    delay(300);
+    Serial.println(oddWall);
+    waitForTurn();
+    //delay(300);
     // setAngle(targetAngle);
   }
 
@@ -213,7 +216,7 @@ void alongWall() {
   int forward, front, back;
   int turnDelay = 0;
   int targetAngleOfset = 0;
-  int angleAjustment = 15;
+  int angleAjustment = 10;
 
 int counter= 0;
 
@@ -328,7 +331,7 @@ Serial.print(oddWalldist);
 
       delay(turnDelay);
 
-    } else if (estDist < 50) {
+    } else if (estDist < 100) {
       Serial.println("Moving further away from the wall");
       if (turningRight) {
         targetAngleOfset = -angleAjustment;
@@ -340,7 +343,7 @@ Serial.print(oddWalldist);
 
     }
 
-    else if (estDist > 80 || estDist < 120) {
+    else if (estDist > 150 || estDist < 200) {
       Serial.println("Correct distance to the walll");
       targetAngleOfset = 0;
       delay(turnDelay);
@@ -352,18 +355,23 @@ Serial.print(oddWalldist);
     
     if(oddWall){
     if(ultraSonicDist < oddWalldist){
-      oddWall = false;
+      
       counter++;
     }  
     }else{
 
       if(ultraSonicDist < evenWalldist){
-oddWall = true;
+
         counter++;
     } 
     }
 
-    if(counter == 3){
+    if(counter == 2){
+      if(oddWall){
+        oddWall = false;
+      }else{
+        oddWall = true;
+      }
       edgeFound = true;
     }
   }
@@ -416,6 +424,7 @@ void firstmovement() {
       edgeFound = true;
     }
   }
+  oddWalldist = getUltrasonic();
   if (turningRight) {
     Serial.println("--------Turning Right--------");
     setAngle(90);
@@ -427,7 +436,7 @@ void firstmovement() {
   }
 
 
-  oddWalldist = getUltrasonic();
+  
   Serial.println("--------Ultrasonic dist--------");
   Serial.println(oddWalldist);
 }
@@ -563,8 +572,8 @@ void setMotor(int8_t motorNum) {
 
 int readAngle(){
 Wire1.requestFrom(12, 2);
-int16_t currentAngleTMP = readWireInt();
-return currentAngleTMP;
+int16_t currentAngleTMP = recieveWireInt();
+return -currentAngleTMP;
 
 }
 
@@ -688,6 +697,33 @@ int recieveInt() {
   returnInt += b2;
 
   return returnInt;
+}
+
+
+void waitForTurn(){
+
+   Serial.println("WAIT FOR TURN");
+int currentAngle = readAngle();
+   Serial.println(currentAngle);
+   Serial.println(targetAngle);
+if(!turningRight){
+  while(currentAngle>targetAngle+10){
+    currentAngle = readAngle();
+    
+   Serial.println(currentAngle);
+   delay(20);
+   Serial.println("Waiting for Angle RIGHT");
+  }
+}
+else{
+  while(currentAngle<targetAngle-10){
+    currentAngle = readAngle();
+    
+   Serial.println(currentAngle);
+   delay(20);
+    Serial.println("Waiting for Angle LEFT");
+  }
+}
 }
 
 //TOF SENSORS BELOW

@@ -53,6 +53,8 @@ void setup() {
   delay(500);
   // initialize device
 
+
+
   if(!(BMI160.begin(BMI160GenClass::I2C_MODE, i2c_addr))){
     while(1){
     Serial.println("Failed to initialise");
