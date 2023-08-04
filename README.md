@@ -20,12 +20,12 @@ It is quite a lengthy parts list however we believe all the components are vital
 - Gyro(Pi Pico) board - relative gyro, calculates angle for turning
 - TOF(Pi Pico) board - Master I2C board. Does all the distance measuring and logic
 <picture>
-<img alt="A Raspberry Pi Pico is used for both the TOF board and Gyro board src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0174%2F1800%2Fproducts%2FPICOBOARDWHITEANGLE2_1024x1024.jpg%3Fv%3D1616398924&f=1&nofb=1&ipt=053fc17a069d7767fd1dc10b2b5485041eedfcf792e284a995c5a39960d3604d&ipo=images">
+<img alt="A Raspberry Pi Pico is used for both the TOF board and Gyro board" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0174%2F1800%2Fproducts%2FPICOBOARDWHITEANGLE2_1024x1024.jpg%3Fv%3D1616398924&f=1&nofb=1&ipt=053fc17a069d7767fd1dc10b2b5485041eedfcf792e284a995c5a39960d3604d&ipo=images">
 </picture>
 
 - Motor Control board - Controls the drive motor via PWM and controls servo for steering
 <picture>
-<img alt="Arduino Nano receives commands for the other boards for steering and driving src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimgaz.staticbg.com%2Fimages%2Foaupload%2Fbanggood%2Fimages%2FB1%2FF3%2F61701d34-1353-4d42-bc39-ada93e72c7db.JPG&f=1&nofb=1&ipt=1efc27b5edb95d0c9deb1fe0c353feed30bde807e831f4f87d48cdd84f592554&ipo=images">
+<img alt="Arduino Nano receives commands for the other boards for steering and driving" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimgaz.staticbg.com%2Fimages%2Foaupload%2Fbanggood%2Fimages%2FB1%2FF3%2F61701d34-1353-4d42-bc39-ada93e72c7db.JPG&f=1&nofb=1&ipt=1efc27b5edb95d0c9deb1fe0c353feed30bde807e831f4f87d48cdd84f592554&ipo=images">
 </picture>
 
 The boards all communicate via the I2C protocol
