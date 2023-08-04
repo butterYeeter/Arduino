@@ -16,18 +16,18 @@ The robot is built on a 3D printed chasis designed by a member of the team. All 
 It is quite a lengthy parts list however we believe all the components are vital. We have 4 microtrollers each serving specific and important functionality. The functions are as follows: 
 - Camera(ESP 32) board - handles positioning via video. sends data to the TOF board
 <p>
-<img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.universal-solder.ca%2Fwp-content%2Fuploads%2F2020%2F03%2F2184_5507a683-d21a-4e1b-a165-ac7bec357cb20.jpg&f=1&nofb=1&ipt=e5d1252ea72b2e73f0be1c7b8898891e59f3b16ce268294fbb97dd0f83c573aa&ipo=images" width=20% height=20% alt="Picture of ESP32 camera board">
+<img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.universal-solder.ca%2Fwp-content%2Fuploads%2F2020%2F03%2F2184_5507a683-d21a-4e1b-a165-ac7bec357cb20.jpg&f=1&nofb=1&ipt=e5d1252ea72b2e73f0be1c7b8898891e59f3b16ce268294fbb97dd0f83c573aa&ipo=images" width=20% height=20% title="Picture of ESP32 camera board">
 </p>
 
 - Gyro(Pi Pico) board - relative gyro, calculates angle for turning
 - TOF(Pi Pico) board - Master I2C board. Does all the distance measuring and logic
 <picture>
-<img alt="A Raspberry Pi Pico is used for both the TOF board and Gyro board" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0174%2F1800%2Fproducts%2FPICOBOARDWHITEANGLE2_1024x1024.jpg%3Fv%3D1616398924&f=1&nofb=1&ipt=053fc17a069d7767fd1dc10b2b5485041eedfcf792e284a995c5a39960d3604d&ipo=images" width=20% height=20%>
+<img title="A Raspberry Pi Pico is used for both the TOF board and Gyro board" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0174%2F1800%2Fproducts%2FPICOBOARDWHITEANGLE2_1024x1024.jpg%3Fv%3D1616398924&f=1&nofb=1&ipt=053fc17a069d7767fd1dc10b2b5485041eedfcf792e284a995c5a39960d3604d&ipo=images" width=20% height=20%>
 </picture>
 
 - Motor Control board - Controls the drive motor via PWM and controls servo for steering
 <picture>
-<img alt="Arduino Nano receives commands for the other boards for steering and driving" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimgaz.staticbg.com%2Fimages%2Foaupload%2Fbanggood%2Fimages%2FB1%2FF3%2F61701d34-1353-4d42-bc39-ada93e72c7db.JPG&f=1&nofb=1&ipt=1efc27b5edb95d0c9deb1fe0c353feed30bde807e831f4f87d48cdd84f592554&ipo=images" width=20% height=20%>
+<img title="Arduino Nano receives commands for the other boards for steering and driving" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimgaz.staticbg.com%2Fimages%2Foaupload%2Fbanggood%2Fimages%2FB1%2FF3%2F61701d34-1353-4d42-bc39-ada93e72c7db.JPG&f=1&nofb=1&ipt=1efc27b5edb95d0c9deb1fe0c353feed30bde807e831f4f87d48cdd84f592554&ipo=images" width=20% height=20%>
 </picture>
 
 The boards all communicate via the I2C protocol
