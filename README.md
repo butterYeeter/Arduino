@@ -12,4 +12,4 @@ Motor Control board - controls the motor via PWM
 TOF board - Master I2C board. Does all the distance measuring and logic
 
 # Management
-All boards communicate via I2C. We will now discuss specifi management of mobility, power, sensor and obstacle management.
+-All boards communicate via I2C. We will now discuss specifi management of mobility, power, sensor and obstacle management.
