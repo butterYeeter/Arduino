@@ -1,5 +1,7 @@
 # Robot Documentation
-'/v-photos/front.jpg'
+<p align=center>
+<img title="Meet Chihuahua! Our lovely, crazy robot :P" src="https://github.com/butterYeeter/Arduino/blob/main/v-photos/front.jpg?raw=true" width=75%>
+</p>
 
 ## Content
 - 
