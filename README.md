@@ -23,3 +23,15 @@ Initialy powered off of a 3s Li-ion battery however the voltage was too high. We
 
 ### Obstacle avoidance
 Through the series of 8 short range time of flight sensors and one long range one (only one was used to high cost) we created what is essentialy poor man's LIDAR. We then only track the inside walls as we found it the simplest solution for position and owrks best with the short range TOF sensor array. The robot aims to drive between 100 and 300mm away from the inside wall. When the robot no longer detects the inside wall it knows that it should turn. As for the obstacle chanllenge the robot makes use of the camera and TOF array to determine the position of the robot relative to the obstacle as well as the color of the obstacle. It will then hug one of side walls depending on wether is a red or green obstacle.
+
+```C
+void main() {
+ printf("Hello world!n");
+}
+```
+
+[Obstacles]()
+
+| Hello | test |
+|------:|------|
+|wow    |no way|
