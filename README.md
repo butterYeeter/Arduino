@@ -7,7 +7,7 @@
 - 
 
 
-## History
+## [History](/docs/history.md)
 Firstly we started this project by splitting our efforts and worked on both an arduino based robot and an ev3 based robot. Due to school restricting the time we had to work on both, more progress was made on the arduino based robot and it was decided to use this for the competition.
 
 ## Parts List
