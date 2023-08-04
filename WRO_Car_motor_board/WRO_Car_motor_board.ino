@@ -95,10 +95,11 @@ void loop() {
     }
     if (motorSpeed == 10) {
     }
-    digitalWrite(2, HIGH);
+    
 
 
     if (motorSpeed > 0) {
+      digitalWrite(2, HIGH);
       delay(4);
     }
     if (motorSpeed == 1) {
