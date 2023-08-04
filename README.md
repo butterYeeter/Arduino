@@ -1,4 +1,6 @@
 # Robot Documentation
+'/v-photos/front.jpg'
+
 ## Content
 - 
 
@@ -14,7 +16,7 @@ The robot is built on a 3D printed chasis designed by a member of the team. All 
 It is quite a lengthy parts list however we believe all the components are vital. We have 4 microtrollers each serving specific and important functionality. The functions are as follows: 
 - Camera(ESP 32) board - handles positioning via video. sends data to the TOF board
 <picture>
-<img alt="Picture of ESP32 camera board" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.universal-solder.ca%2Fwp-content%2Fuploads%2F2020%2F03%2F2184_5507a683-d21a-4e1b-a165-ac7bec357cb20.jpg&f=1&nofb=1&ipt=e5d1252ea72b2e73f0be1c7b8898891e59f3b16ce268294fbb97dd0f83c573aa&ipo=images" width=20% height=20%>
+<img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.universal-solder.ca%2Fwp-content%2Fuploads%2F2020%2F03%2F2184_5507a683-d21a-4e1b-a165-ac7bec357cb20.jpg&f=1&nofb=1&ipt=e5d1252ea72b2e73f0be1c7b8898891e59f3b16ce268294fbb97dd0f83c573aa&ipo=images" width=20% height=20% alt="Picture of ESP32 camera board" />
 </picture>
 
 - Gyro(Pi Pico) board - relative gyro, calculates angle for turning
