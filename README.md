@@ -90,7 +90,7 @@ This section is to document the design on the mdf board parts and 3D printed cha
  We will now discuss specific management of mobility, power, sensor and obstacle management.
 
 ### *Mobility*
-Mobility: Initially a high torque low RPM motor was used, but the complicated belt system made this impractical. We then switched to a lower torque but much higher speed motor that was compatible with an off the shelf gearbox, this is what we are currently using. Mention the encoded and non-encoded motors. The current motor is also run at a higher voltage than is supposed to and is wired with capacitors to reduce EMF which was interfering with our gyro board causing it to reset.
+Mobility: Initially a high torque low RPM motor was used, but the complicated belt system made this impractical. We then switched to a lower torque but much higher speed motor that was compatible with an off the shelf gearbox, this is what we are currently using. ```Mention the encoded and non-encoded motors.``` The current motor is also run at a higher voltage than is supposed to and is wired with capacitors to reduce EMF which was interfering with our gyro board causing it to reset.
 
 ### *Power and sensors*
 Initialy powered off of a 3s Li-ion battery however the voltage was too high. We then switched to a 2s Li-ion battery however the voltage drop was too great and there was capacity issues. We found it easier to switch to a 6 cell drone battery and use multiple voltage regulators. This is what worked best for us and what is currently in use.
