@@ -1,6 +1,6 @@
 # Robot Documentation
 
-> Disclaimer! This repo is a fork of the actual repo used so that we could format it nicely
+<!-- > Disclaimer! This repo is a fork of the actual repo used so that we could format it nicely -->
 
 - [Robot Documentation](#robot-documentation)
     - [Mobility Management](#mobility-management)
@@ -22,7 +22,7 @@ The **old chasis** was a combination of 3D printing([Model available here](/mode
 
 <p>
     <img style="height:200px" title="The drive motor" src="https://epro.pk/wp-content/uploads/2017/11/dc-motor-6V.jpg">
-    <img title="Meet Chihuahua! Our lovely, crazy robot :P" src="https://github.com/butterYeeter/Arduino/blob/main/v-photos/front.jpg?raw=true" style="height:200px">
+    <img title="Meet Chihuahua! Our lovely, crazy robot :P" src="https://github.com/butterYeeter/Arduino/blob/main/v-photos/old/front.jpg?raw=true" style="height:200px">
 </p>
 
 #### Improvements
@@ -40,37 +40,20 @@ A variety of sensors were used in this first robot for the challenges. 8 **[Time
 #### Improvements
 The new robot is **powered by a 4 cell battery due to new the chasis**. The previous **6 cell would not fit** within the allocated space on the chasis so we used the **smaller 4 cell**. The 8 time of flight sensors as well as the one fancy time of flight were **discarded in favour of a 360 degree scanning lidar**. The old sensors had a bad field of view and would throw false positives as to what the actual distance reading was. This caused major issues when it came to reliablity of the function of the car. The new lidar has an **excellent field of view of just 2 degrees** and can measure distances of up to 12 meters. This has greatly reduced errors that were associated to the time of flight sensors. We still use a **Pi Pico for managing** this sensor. The sensor uses a basic **one wire serial interface**. Unfortunately there were further issues with dynamic memory allocation as we had to port a library from the Raspberry Pi 4B to the Pi Pico. We finally on 3 good time of flight sensor which are reliable. 
 
-<p align=center><img title="Main Board and LIDAR" style="height:550px" src="/docs/gyro-board-pic.png"><img title="Gyro Board" style="height:550px" src="/docs/Mainboard-pic.png"></p>
+<p align=center>
+  <img title="Main Board and LIDAR" style="height:550px" src="https://raw.githubusercontent.com/butterYeeter/Arduino/main/docs/gyro-board-pic.png">
+</p>
+<p align=center>
+  <img title="Gyro Board" style="height:500" src="https://raw.githubusercontent.com/butterYeeter/Arduino/main/docs/Mainboard-pic.png">
+</p>
 
 Another **issue** we had was **with the old gyro sensor**. Under certain conditions(erratic movement when following a target angle) the **gyro would drift** away from the true angle. This was another major issue that we addressed. We have since **switched to an absolute position sensor**. It is called the **BNO085** which has an **accelerometer, gyrometer and magnotometer**. Through the dark arts of sensor fusion, **gyro drift has been erradicated**. This sensor is managed by its a Pi Pico as well.
 
 ### Obstacle Management
-For the open round the robot simply uses 2 time of flight sensors on the left and right of the car and one gyro. The gyro is used to maintain a straight line while driving as well as steering around corners. The time of flight sensors are used to detect when a wall falls away(the distance measurement suddenly increases). This can tell us whether to go clockwise or anti-clockwise automatically.
+For the **open round** the robot **simply uses 2 time of flight sensors** on the left and right of the car and **one gyro**. The gyro **is used to maintain a straight line** while driving as well as **steering** around corners. The **time of flight sensors are used to detect when a wall falls away**(the distance measurement suddenly increases). This can **tell us whether to go clockwise or anti-clockwise** automatically.
 
 <p align=left><img style="width:300px" title="The BNO085" src="https://cdn2.botland.store/115063/bno085-9-dof-imu-fusion-breakout-3-axis-accelerometer-magnetometer-and-gyroscope-adafruit-4754.jpg"></p>
 
-For the challenge round the previous sensors are used in addition to a pixy cam v2. The pixy cam is configured to detect the signitures of the blocks and communicates over I2C whether to go left, right on stay centered(aka no block in the section). When a signiture is detected the main board sends a new target to the gyro board and slows down the motor board.  This is done so that the robot can 'hug' the correct wall before it passes the traffic sign. 
+For the challenge round the **previous sensors are used in addition to a pixy cam v2**. The pixy cam is **configured to detect the signitures of the traffic signs** and **communicates over I2C whether to go left, right on stay in the middle**(aka no block in the section). When a **signiture is detected** the main board sends a **new target to the gyro board** and **slows down the motor board**.  This is done so that the **robot can 'hug' the correct wall before it passes the traffic sign**. 
 
-```mermaid
----
-title: Logic Flow for Open Round
----
-
-flowchart TD
-    start([Start])
-    move1[Drive forward]
-    move2[Drive forward]
-    wall{Has wall fallen away?}
-    angle1[Set new target angle]
-    steer1[Steer to new target angle]
-    numturn1[Number of turns = 0]
-    numturn2[Number of turns + 1]
-    numturns{Have we done 12 turns?}
-    finalsection[Stop in final section]
-    ending([End])
-
-    start-->numturn1-->move1-->wall-- no -->move2
-    wall-- yes -->angle1-->steer1-->numturn2-->numturns-- no -->move1
-    move2-->wall
-    numturns-- yes -->finalsection-->ending
-```
+![wow](/docs/flowchart.png)
