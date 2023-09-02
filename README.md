@@ -18,7 +18,7 @@ In the first version of the **'robot'**, the **motors were managed by an [Arduin
  
 We then **switched to a lower torque but high rpm brushed dc motor** which was **compatible with an 'off the shelf' gear box**. The motor was also run at a higher than recomended voltage and was **wired with capicitors to reduce EMF**(Which was causing our gyro control board to reset). Steering was handled using another **pi pico with a gyro sensor attached**. This board **controlled a servo using PWM** which controlled the steering rack. The main board communicated(via I2C) the target angle the gyro board should maintain using the steering rack.
 
-The **old chasis** was a combination of 3D printing([Model available here](/models/body_v2.stl)) and hand cut MDF board. The model was a modification(done in Fusion 360) of a base design provided to us by our club. All the control boards as well as the the motor, gear box, servo, gyro, battery and boost converters were **mounted to this chasis**. The TOF sensors used for naviation were mounted to an **mdf frame**(which was connected to the chasis).
+The **old chasis** was a combination of 3D printing and hand cut MDF board. The model was a modification(done in Fusion 360) of a base design provided to us by our club. All the control boards as well as the the motor, gear box, servo, gyro, battery and boost converters were **mounted to this chasis**. The TOF sensors used for naviation were mounted to an **mdf frame**(which was connected to the chasis). [Model available here](https://github.com/butterYeeter/Arduino/blob/main/models/body_v2.stl)
 
 <p>
     <img style="height:200px" title="The drive motor" src="https://epro.pk/wp-content/uploads/2017/11/dc-motor-6V.jpg">
@@ -29,6 +29,8 @@ The **old chasis** was a combination of 3D printing([Model available here](/mode
 After the provintial round of the competition, a major decision was made to completely redesign the robot. A new chasis was designed(available ```[here](/models/body_v2.stl)```) and is **completely 3D printed**. This helped improve on the flimsy nature of the old MDF frame. **Components** of the old design was **reused** such as the servo for steering as well as the gearbox. The chasis consists of an **interior chasis for mounting components**, steering rack and motors and an **exterior chasis that acts as a bumper**. 
 
 A choice was made to use **2 drive motors**(connected to the same axle) for **increased torque**(initially a decision was made to ram into the walls according to which traffic sign is seen by the camera). Previously **8 [Time of Flight](/docs/tof.pdf) sensors was used** however we then **switched to one fancy 360 degrees scanning lidar**. This is mounted in the center of the chasis and **no other components sit above it to prevent inteference with the measurements**. On top of the lidar, a **```pixy cam``` is mounted on a servo to scan for traffic signs**.
+
+<p><img style="heigh:200px" title="Meet chihuahua mk3" src=""></p>
 
 
 ### Power and Sense Management
@@ -56,4 +58,24 @@ For the **open round** the robot **simply uses 2 time of flight sensors** on the
 
 For the challenge round the **previous sensors are used in addition to a pixy cam v2**. The pixy cam is **configured to detect the signitures of the traffic signs** and **communicates over I2C whether to go left, right on stay in the middle**(aka no block in the section). When a **signiture is detected** the main board sends a **new target to the gyro board** and **slows down the motor board**.  This is done so that the **robot can 'hug' the correct wall before it passes the traffic sign**. 
 
-![wow](/docs/flowchart.png)
+```mermaid
+---
+title: Logic Flow for Open Round
+---
+flowchart TD
+    start([Start])
+    move1[Drive forward]
+    move2[Drive forward]
+    wall{Has wall fallen away?}
+    angle1[Set new target angle]
+    steer1[Steer to new target angle]
+    numturn1[Number of turns = 0]
+    numturn2[Number of turns + 1]
+    numturns{Have we done 12 turns?}
+    finalsection[Stop in final section]
+    ending([End])
+    start-->numturn1-->move1-->wall-- no -->move2
+    wall-- yes -->angle1-->steer1-->numturn2-->numturns-- no -->move1
+    move2-->wall
+    numturns-- yes -->finalsection-->ending
+```
