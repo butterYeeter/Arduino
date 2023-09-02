@@ -30,7 +30,7 @@ After the provintial round of the competition, a major decision was made to comp
 
 A choice was made to use **2 drive motors**(connected to the same axle) for **increased torque**(initially a decision was made to ram into the walls according to which traffic sign is seen by the camera). Previously **8 [Time of Flight](/docs/tof.pdf) sensors was used** however we then **switched to one fancy 360 degrees scanning lidar**. This is mounted in the center of the chasis and **no other components sit above it to prevent inteference with the measurements**. On top of the lidar, a **```pixy cam``` is mounted on a servo to scan for traffic signs**.
 
-<p><img style="heigh:200px" title="Meet chihuahua mk3" src=""></p>
+<p><img style="heigh:200px" title="Meet chihuahua mk3" src="https://raw.githubusercontent.com/butterYeeter/Arduino/main/v-photos/front.jpeg"></p>
 
 
 ### Power and Sense Management
