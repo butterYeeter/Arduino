@@ -2,14 +2,20 @@
 
 <!-- > Disclaimer! This repo is a fork of the actual repo used so that we could format it nicely -->
 
-- [Robot Documentation](#robot-documentation)
-    - [Mobility Management](#mobility-management)
-      - [Robot Version 1](#robot-version-1)
-      - [Improvements](#improvements)
-    - [Power and Sense Management](#power-and-sense-management)
-      - [Robot Version 1](#robot-version-1-1)
-      - [Improvements](#improvements-1)
-    - [Obstacle Management](#obstacle-management)
+## Table of Contents
+- [Performance Video](#performance-video)
+- [Mobility Management](#mobility-management)
+  - [Robot Version 1](#robot-version-1)
+  - [Improvements](#improvements)
+- [Power and Sense Management](#power-and-sense-management)
+  - [Robot Version 1](#robot-version-1-1)
+  - [Improvements](#improvements-1)
+- [Obstacle Management](#obstacle-management)
+
+
+### Performance Video
+https://github.com/butterYeeter/Arduino/assets/100842250/680a6417-5dfc-4aaf-9352-56b448d2d792
+
 
 
 ### Mobility Management
